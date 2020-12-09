@@ -1,0 +1,63 @@
+title 'Send note'
+
+Browser->Server: HTTP POST https://studies.cs.helsinki.fi/exampleapp/new_note
+Server-->Browser: 302 location: exampleapp/notes
+Browser->Server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/notes
+Server-->Browser: HTML content
+Browser->Server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/main.css
+Server-->Browser: main.css
+Browser->Server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/main.js
+Server-->Browser: main.js
+
+note over Browser:
+Browser starts executing js code
+that requests JSON data from server
+end note
+
+Browser->Server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/data.json
+Server-->Browser: [{ content: "covfefe-19", date: "2020-12-08T16:09:48.551Z }, ...]
+
+note over Browser:
+browser executes the event handler
+that renders notes to display
+end note
+Browser->Server: HTTP GET https://studies.cs.helsinki.fi/favicon.ico
+Server-->Browser: favicon.ico
+
+
+title SPA
+
+
+Browser->Server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/spa
+Server-->Browser: HTML content
+Browser->Server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/main.css
+Server-->Browser: main.css
+Browser->Server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/spa.js
+Server-->Browser: spa.js
+
+note over Browser:
+Browser starts executing js code
+that requests JSON data from server
+end note
+
+Browser->Server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/data.json
+Server-->Browser: [{ {content: "hi", date: "2020-12-08T16:14:36.625Z"} }, ...]
+
+note over Browser:
+browser executes the event handler
+that renders notes to display
+end note
+Browser->Server: HTTP GET https://studies.cs.helsinki.fi/favicon.ico
+Server-->Browser: favicon.ico
+
+
+title 06 
+
+note over Browser:
+User click submit button after input note 
+Js push the related note to the notes groups, render on screen.
+Send request.
+end note
+Browser->Server: HTTP POST https://studies.cs.helsinki.fi/exampleapp/new_note_spa
+Server-->Browser: [{ message: "note created" }]
+
