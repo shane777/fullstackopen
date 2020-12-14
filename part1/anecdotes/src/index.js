@@ -15,7 +15,7 @@ const VoteResult = ({ votes, anecdotes, mostVotedIndex }) =>{
       <div>{ anecdotes[mostVotedIndex] } </div>
       <div>has { votes[mostVotedIndex] } votes</div>
     </>
-  )
+  );
 }
 
 
