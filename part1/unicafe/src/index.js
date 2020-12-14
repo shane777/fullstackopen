@@ -9,13 +9,21 @@ const Button = (props) => (
 
 const Display = props => <div className="h1">{props.value}</div>
 
-const Statistics = props => (
-  <>
-    <div>good {props.good}</div>
-    <div>neutral {props.neutral}</div>
-    <div>bad {props.bad}</div>
-  </>
-)
+const Statistics = ({ good, neutral, bad}) => {
+  const all = good + neutral + bad;
+  const score = good * 1 + bad * -1;
+  return (  
+    <>
+      <div>good {good}</div>
+      <div>neutral {neutral}</div>
+      <div>bad {bad}</div>
+      <div>all { all }</div>
+      <div>average { all > 0? score/ all : 0 }</div>
+      <div>positive { all > 0? (good / all) * 100 : 0 }%</div>
+    </>
+  )
+}
+
 
 const App = () => {
   // save clicks of each button to own state
@@ -33,7 +41,7 @@ const App = () => {
       <Statistics good={good} neutral={neutral} bad={bad} />
     </div>
   )
-}
+} 
 
 ReactDOM.render(<App />, 
   document.getElementById('root')
