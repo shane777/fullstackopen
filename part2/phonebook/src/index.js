@@ -1,15 +1,27 @@
 import React, { useEffect, useState } from 'react'
 import ReactDOM from 'react-dom'
-import axios from 'axios'
+import PersonRequest from './request';
 
-const NumberBook = ({ persons }) => 
-  persons.map(person=> 
+
+const NumberBook = ({ persons, setPersons }) => {
+  const onDeletePerson = (person) => {
+    if(window.confirm(`Delete ${person.name} ?`)){
+      PersonRequest.deletePerson(person.id).then(()=>{
+        setPersons(persons.filter(p => p.id !== person.id));
+      });
+    }
+  }
+
+  return persons.map(person=> 
     (
       <div key={person.name}>
-        <span>{ person.name }</span>  <span>{ person.number }</span>
+        <span>{ person.name } </span>  
+        <span>{ person.number } </span>  
+        <button onClick={()=> onDeletePerson(person)}>delete</button>
       </div>
     )
   );
+}
 
 const Filter = ({ filterValue, setFilterValue }) => {
   const onFilterChange = e => {
@@ -40,12 +52,31 @@ const PersonForm = ({ persons, setPersons }) => {
   }
   const submitAction = ( e ) => {
     e.preventDefault(); 
-    if(persons.some( a => a.name === newName)) return alert(`${newName} is already added to phonebook`);
     if(!newName ) return alert('Please input name');
     if(!newPhoneNumber ) return alert('Please input phone number  ');
-    setPersons(persons.concat({ name: newName, number: newPhoneNumber }));
-    setNewName('');
-    setNewPhoneNumber('');
+    const personCheckIndex = persons.findIndex( a => a.name === newName)
+    if( personCheckIndex !== -1 ){
+      if(window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)){
+        PersonRequest
+          .updatePerson( personCheckIndex + 1, { ...persons[personCheckIndex], number: newPhoneNumber})
+          .then((res)=> {
+            console.log('res: ', res);
+            const jsonStr = JSON.stringify(persons);
+            const target = JSON.parse(jsonStr);
+            target[personCheckIndex] = res;
+            setPersons(target);
+            setNewName('');
+            setNewPhoneNumber('');
+          });
+      }
+    }else {
+      PersonRequest.createPerson({ name: newName, number: newPhoneNumber })
+      .then((newPerson)=> {
+        setPersons(persons.concat(newPerson));
+        setNewName('');
+        setNewPhoneNumber('');
+      })
+    }
   }
   return (
     <form onSubmit={submitAction}>
@@ -61,14 +92,11 @@ const PersonForm = ({ persons, setPersons }) => {
 
 const App = () => {
   const [persons, setPersons] = useState([]);
-
   const [ filterValue , setFilterValue ] = useState('');
 
   useEffect(()=> {
-    axios
-      .get('http://localhost:3001/persons')
-      .then( response => {
-        setPersons(response.data);
+      PersonRequest.getAllPersons().then( persons => {
+        setPersons(persons);
       });
   }, []);
 
@@ -79,7 +107,7 @@ const App = () => {
       <h2>Add a new</h2>
       <PersonForm  persons={persons}  setPersons={setPersons} />
       <h2>Numbers</h2>
-      <NumberBook persons = { persons.filter( p => p.name.toLowerCase().includes(filterValue)) } />
+      <NumberBook persons = { persons.filter( p => p.name.toLowerCase().includes(filterValue)) } setPersons={setPersons} />
     </div>
   )
 }
