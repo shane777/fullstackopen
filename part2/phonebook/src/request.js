@@ -7,7 +7,7 @@ const createPerson = ( changedObj ) => {
   return request.then(res => res.data);
 }
 const deletePerson = (id) => {
-  return axios.delete(`http://localhost:3001/persons/${id}`).then(res => res.data);
+  return axios.delete(`http://localhost:3001/persons/${id}`);
 }
 const updatePerson = (id, person) => {
   return axios.put(`http://localhost:3001/persons/${id}`, person).then(res => res.data);
