@@ -77,9 +77,6 @@ app.post('/api/persons', (req, res)=>{
   res.json(newPerson);
 })
 
-app.get('/', (req, res)=>{
-  res.send('<h1>Hello world</h1>');
-})
 
 const PORT = process.env.PORT || 3001
 
