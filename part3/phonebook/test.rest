@@ -1,4 +1,4 @@
-DELETE http://localhost:3001/api/persons/2
+DELETE http://localhost:3001/api/persons/5ff2c4fc444f6c3fd2db0e84
 
 
 ###
@@ -8,4 +8,18 @@ Content-Type: application/json
 {
   "name": "szd",
   "number": 1231454543
+}
+###
+GET http://localhost:3001/api/persons
+
+###
+GET http://localhost:3001/api/persons/5ff2c4fc444f6c3fd2db0e84
+
+###
+PUT http://localhost:3001/api/persons/5ffbfb6cb727b0c71b446331
+Content-Type: application/json
+
+{
+  "name": "szd",
+  "number": 567567
 }

@@ -19,19 +19,16 @@ const PersonForm = ({ persons, setPersons, setErrorMessage, setExtraClass }) => 
     if(!newPhoneNumber ) return alert('Please input phone number  ');
     const personCheckIndex = persons.findIndex( a => a.name === newName)
     if( personCheckIndex !== -1 ){
-      if(window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)){
-        PersonRequest
-          .updatePerson( personCheckIndex + 1, { ...persons[personCheckIndex], number: newPhoneNumber})
-          .then((res)=> {
-            console.log('res: ', res);
-            const jsonStr = JSON.stringify(persons);
-            const target = JSON.parse(jsonStr);
-            target[personCheckIndex] = res;
-            setPersons(target);
-            setNewName('');
-            setNewPhoneNumber('');
-          });
-      }
+      PersonRequest
+        .updatePerson(persons[personCheckIndex].id, { ...persons[personCheckIndex], number: newPhoneNumber})
+        .then((res)=> {
+          const jsonStr = JSON.stringify(persons);
+          const target = JSON.parse(jsonStr);
+          target[personCheckIndex] = res;
+          setPersons(target);
+          setNewName('');
+          setNewPhoneNumber('');
+        });
     }else {
       PersonRequest.createPerson({ name: newName, number: newPhoneNumber })
       .then((newPerson)=> {
