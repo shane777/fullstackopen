@@ -9,7 +9,8 @@
     "dev": "nodemon index.js",
     "build:ui": "rm -rf build && cd ../phonebook-frontend && npm run build && cp -r build ../phonebook",
     "deploy:full": "npm run build:ui && git add . && git commit -m 'ui build for part3' && npm run deploy",
-    "deploy": "cd ../../ && git subtree push --prefix part3/phonebook heroku master"
+    "deploy": "cd ../../ && git subtree push --prefix part3/phonebook heroku master",
+    "lint": "eslint . --fix"
   },
   "author": "shanez",
   "license": "ISC",
@@ -22,6 +23,9 @@
     "morgan": "^1.10.0"
   },
   "devDependencies": {
+    "eslint": "^7.17.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-import": "^2.22.1",
     "nodemon": "^2.0.6"
   }
 }

@@ -9,22 +9,18 @@ morgan.token('body', (req, res) => JSON.stringify(req.body));
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'));
 const Phonebook = require('./models/phonebook');
 
-
-const phoneBookBodyValid = ( req, res, next ) => {
+const phoneBookBodyValid = (req, res, next) => {
   const person = req.body;
-  if(!person.name){
+  if (!person.name) {
     res.status(400).json({
-      error: 'Missing name'
+      error: 'Missing name',
     }).end();
-    return;
-  }else if(!person.number){
+  } else if (!person.number) {
     res.status(400).json({
-      error: 'Missing phone number'
+      error: 'Missing phone number',
     }).end();
-    return;
-  }
-  else next();
-}
+  } else next();
+};
 // let persons = [
 //   {
 //     "name": "Arto Hellas",
@@ -47,10 +43,9 @@ const phoneBookBodyValid = ( req, res, next ) => {
 //   return Math.floor(Math.random() * Math.floor(999999999));
 // }
 
-
-app.get('/api/persons', (req, res)=>{
+app.get('/api/persons', (req, res) => {
   Phonebook.find({}).then((phonebooks) => {
-    res.json(phonebooks.map(phonebook => phonebook.toJSON()));
+    res.json(phonebooks.map((phonebook) => phonebook.toJSON()));
   });
 });
 
@@ -60,65 +55,65 @@ app.get('/api/info', (req, res) => {
   });
 });
 
-app.get('/api/persons/:id', (req,res)=>{
-  const id = req.params.id;
-  Phonebook.findById(id).then( phonebook => {
-    if(phonebook){
-      res.json(phonebook)
-    }else {
+app.get('/api/persons/:id', (req, res) => {
+  const { id } = req.params;
+  Phonebook.findById(id).then((phonebook) => {
+    if (phonebook) {
+      res.json(phonebook);
+    } else {
       res.status(404).end();
     }
   });
 });
 
-app.put('/api/persons/:id', phoneBookBodyValid, (req, res, next)=>{
-  const id = req.params.id;
-  const body = req.body;
+app.put('/api/persons/:id', phoneBookBodyValid, (req, res, next) => {
+  const { id } = req.params;
+  const { body } = req;
   const newPerson = {
     name: body.name,
-    number: body.number
-  }
-  Phonebook.findByIdAndUpdate(id , newPerson, { new: true }).then( person =>{
+    number: body.number,
+  };
+  Phonebook.findByIdAndUpdate(id, newPerson, { new: true }).then((person) => {
     res.json(person);
-  }).catch( err => next(err));
+  }).catch((err) => next(err));
 });
 
-app.delete('/api/persons/:id', (req, res, next)=>{
-  const id = req.params.id;
-  Phonebook.findByIdAndDelete(id).then(()=> {
+app.delete('/api/persons/:id', (req, res, next) => {
+  const { id } = req.params;
+  Phonebook.findByIdAndDelete(id).then(() => {
     res.status(204).end();
-  }).catch(err=> next(err));
+  }).catch((err) => next(err));
 });
 
-app.post('/api/persons', phoneBookBodyValid, (req, res, next)=>{
+app.post('/api/persons', phoneBookBodyValid, (req, res, next) => {
   const person = req.body;
   const newPerson = new Phonebook({
     name: person.name,
     number: person.number,
   });
-  newPerson.save().then( savedPerson => {
+  newPerson.save().then((savedPerson) => {
     res.json(savedPerson);
-  }).catch( err => next(err));
+  }).catch((err) => next(err));
 });
 
 const errorHandler = (error, request, response, next) => {
   console.log('err: ', error.message, error.kind, error.name);
   if (error.name === 'CastError' && error.kind === 'ObjectId') {
-    return response.status(400).send({ error: 'malformatted id' })
-  } else if (error.name === 'ValidationError') {
-    return response.status(400).json({ error: error.message })
+    return response.status(400).send({ error: 'malformatted id' });
+  } if (error.name === 'ValidationError') {
+    return response.status(400).json({ error: error.message });
   }
-  next(error);
-}
+  return next(error);
+};
 app.use(errorHandler);
 
-const unknownEndpoint = (re, rs)=>{
-  rs.status(404).send({ error: 'unknown endpoint '});
-}
+const unknownEndpoint = (re, rs) => {
+  rs.status(404).send({ error: 'unknown endpoint ' });
+};
 app.use(unknownEndpoint);
 
-const PORT = process.env.PORT || 3001
+const PORT = process.env.PORT || 3001;
 
-app.listen(PORT, ()=>{
+app.listen(PORT, () => {
   console.log(`server running on port ${PORT}`);
 });
