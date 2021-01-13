@@ -11,7 +11,6 @@ const NumberBook = ({ persons, setPersons, setErrorMessage }) => {
           setPersons(persons.filter(p => p.id !== person.id));
         })
         .catch((res)=>{
-          console.log('res: ', res);
           setErrorMessage(`Imformation of ${person.name} is already been removed from server`);
           setTimeout(()=>{
             setErrorMessage(null);

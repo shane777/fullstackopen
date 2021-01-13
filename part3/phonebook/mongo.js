@@ -26,7 +26,6 @@ item.save()
   return Phonebook.find({});
 })
 .then((res)=>{
-  console.log('phonebook:')
   res.forEach( phonebook => {
     console.log(phonebook.name + phonebook.number);
   })

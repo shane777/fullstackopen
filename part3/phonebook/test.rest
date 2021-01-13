@@ -7,7 +7,7 @@ Content-Type: application/json
 
 {
   "name": "szd",
-  "number": 1231454543
+  "number": 1231
 }
 ###
 GET http://localhost:3001/api/persons

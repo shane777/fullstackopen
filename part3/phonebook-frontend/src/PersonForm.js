@@ -42,6 +42,13 @@ const PersonForm = ({ persons, setPersons, setErrorMessage, setExtraClass }) => 
           setExtraClass('');
         }, 5000);
       })
+      .catch(err => {
+        console.log('err: ', err.response);
+        setErrorMessage(err.response.data.error);
+        setTimeout(()=>{
+          setErrorMessage(null);
+        }, 5000);
+      });
     }
   }
   return (

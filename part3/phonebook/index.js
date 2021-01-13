@@ -72,11 +72,8 @@ app.get('/api/persons/:id', (req,res)=>{
 });
 
 app.put('/api/persons/:id', phoneBookBodyValid, (req, res, next)=>{
-  console.log('req: ', req.params);
   const id = req.params.id;
-  console.log('id: ', id);
   const body = req.body;
-  console.log('body: ', body);
   const newPerson = {
     name: body.name,
     number: body.number
@@ -93,7 +90,7 @@ app.delete('/api/persons/:id', (req, res, next)=>{
   }).catch(err=> next(err));
 });
 
-app.post('/api/persons', phoneBookBodyValid, (req, res)=>{
+app.post('/api/persons', phoneBookBodyValid, (req, res, next)=>{
   const person = req.body;
   const newPerson = new Phonebook({
     name: person.name,
@@ -101,14 +98,16 @@ app.post('/api/persons', phoneBookBodyValid, (req, res)=>{
   });
   newPerson.save().then( savedPerson => {
     res.json(savedPerson);
-  });
+  }).catch( err => next(err));
 });
 
 const errorHandler = (error, request, response, next) => {
   console.log('err: ', error.message, error.kind, error.name);
   if (error.name === 'CastError' && error.kind === 'ObjectId') {
     return response.status(400).send({ error: 'malformatted id' })
-  } 
+  } else if (error.name === 'ValidationError') {
+    return response.status(400).json({ error: error.message })
+  }
   next(error);
 }
 app.use(errorHandler);
